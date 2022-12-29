@@ -17,6 +17,7 @@ async function run() {
     try{
         const usersCollection = client.db('nearByDB').collection('usersCollection');
         const postsCollection = client.db('nearByDB').collection('postsCollection');
+        const likesCollection = client.db('nearByDB').collection('likesCollection');
 
         //Add users to databse when register
         app.post('/addUsers', async(req, res) => {
@@ -32,11 +33,26 @@ async function run() {
             res.send(result);
         })
 
+        //add users likes to databse
+        app.post('/post/like', async(req, res) => {
+            const like = req.body;
+            const result = await likesCollection.insertOne(like);
+            res.send(result);
+        })
+
         //Get specefic user posts
         app.get('/user/posts/:email', async(req, res) => {
             const email = req.params.email;
             const query = {userEmail: email};
             const result = await postsCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //Get post likes
+        app.get('/post/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {postId: id};
+            const result = await likesCollection.find(query).toArray();
             res.send(result);
         })
 
