@@ -16,10 +16,42 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try{
         const usersCollection = client.db('nearByDB').collection('usersCollection');
+        const postsCollection = client.db('nearByDB').collection('postsCollection');
 
+        //Add users to databse when register
         app.post('/addUsers', async(req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
+
+        //Add user post to databse
+        app.post('/user/post', async(req, res) => {
+            const post = req.body;
+            const result = await postsCollection.insertOne(post);
+            res.send(result);
+        })
+
+        //Get specefic user posts
+        app.get('/user/posts/:email', async(req, res) => {
+            const email = req.params.email;
+            const query = {userEmail: email};
+            const result = await postsCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //Get all posts
+        app.get('/posts/all', async(req, res) => {
+            const query = {};
+            const result = await postsCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //Get user for user profile
+        app.get('/user/:email', async(req, res) => {
+            const email = req.params.email;
+            const query = {email: email};
+            const result = await usersCollection.findOne(query);
             res.send(result);
         })
     }
