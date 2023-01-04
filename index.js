@@ -51,7 +51,7 @@ async function run() {
         //Get post likes
         app.get('/post/:id', async(req, res) => {
             const id = req.params.id;
-            const query = {postId: id};
+            const query = {PostId: id};
             const result = await likesCollection.find(query).toArray();
             res.send(result);
         })
